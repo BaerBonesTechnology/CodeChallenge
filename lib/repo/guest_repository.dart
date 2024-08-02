@@ -1,4 +1,3 @@
-import '../constants/strings.dart';
 import '../models/guest.dart';
 import '../models/guest_group.dart';
 
@@ -11,4 +10,8 @@ abstract class GuestRepository {
   });
 
   void removeGroup(GuestGroup group);
+
+  Future<List<GuestGroup>> retrieveGroups();
+
+  Future<void> addGuestGroup(GuestGroup group);
 }
