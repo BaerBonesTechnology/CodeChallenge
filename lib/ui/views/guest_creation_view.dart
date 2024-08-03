@@ -21,6 +21,7 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
   @override
   Widget build(BuildContext context) {
     var groupList = ref.watch(tempGroupListProvider);
+    var currentGroup = ref.read(currentGroupNotifierProvider.notifier);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -30,7 +31,7 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
         leading: IconButton(
           onPressed: () {
             _guestEntryNameController.clear();
-            currentGroupNotifierProvider.clear();
+            currentGroup.clear();
             groupList.clear();
             context.pop();
           },
@@ -63,7 +64,7 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                   const Spacer(),
                   IconButton.filledTonal(
                     onPressed: () async {
-                      final guest = currentGroupNotifierProvider.addGuest(
+                      final guest = currentGroup.addGuest(
                         name: _guestEntryNameController.text,
                         isReserved:
                             ref.read(tempReservedProvider.notifier).state,
@@ -95,7 +96,7 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                             if (ndx > 0 && ndx < groupList.length) {
                               final guest = groupList[ndx];
                               groupList.removeAt(ndx);
-                              currentGroupNotifierProvider.removeGuest(guest);
+                              currentGroup.removeGuest(guest);
                             }
                           });
                     },
@@ -109,12 +110,12 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
         backgroundColor: Colors.blue.shade600,
         onPressed: () async {
           try {
-            if (currentGroupNotifierProvider.getState() != null) {
+            if (currentGroup.getState() != null) {
               ref
                   .read(guestListProvider.notifier)
-                  .addGuestGroup(currentGroupNotifierProvider.getState()!);
+                  .addGuestGroup(currentGroup.getState()!);
               _guestEntryNameController.clear();
-              currentGroupNotifierProvider.clear();
+              currentGroup.clear();
               groupList.clear();
               context.pop();
             }

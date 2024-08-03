@@ -36,6 +36,7 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final reservationController = ref.watch(guestListProvider);
+    final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
 
     return Scaffold(
       appBar: widget.homeAppBar,
@@ -48,7 +49,7 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
                     return GuestGroupSelection(
                       group: guestGroups[ndx],
                       onSelect: (group) {
-                        currentGroupNotifierProvider.chooseGroup(group);
+                        currentGroup.chooseGroup(group);
                         context.push(guestSelectionRoute);
                       },
                       onDelete: (group) {

@@ -22,41 +22,64 @@ class GuestRepositoryImpl extends GuestRepository {
         unreservedGuests:
             guests.where((element) => element.isReserved == false).toList());
 
-
-
     await addGuestGroup(group);
   }
 
   @override
   Future<void> addGuestGroup(GuestGroup group) async {
-      await database
-          .collection(mainListPath)
-          .doc('${group.name}_${group.id}')
-          .set(group.toJson());
-      guestGroups.add(group);
-  }
-
-  @override
-  void removeGroup(GuestGroup group) {
-    guestGroups.remove(group);
+    await database
+        .collection(mainListPath)
+        .doc('${group.name}_${group.id}')
+        .set(group.toJson());
+    guestGroups.add(group);
   }
 
   @override
   Future<List<GuestGroup>> retrieveGroups() async {
-    final snapshot = await database.collection(mainListPath).where('id', isNull: false).get();
+    final snapshot = await database
+        .collection(mainListPath)
+        .where('id', isNull: false)
+        .get();
     if (snapshot.docs.isNotEmpty) {
       final tempGroup = <GuestGroup>[];
       for (final doc in snapshot.docs) {
         final guestGroup = GuestGroup.fromJson(doc.data());
-        final registeredGuest = guestGroups.where((element) => element.id == guestGroup.id); // Check against guestGroups
+        final registeredGuest = guestGroups.where((element) =>
+            element.id == guestGroup.id); // Check against guestGroups
         if (registeredGuest.isEmpty) {
           tempGroup.add(guestGroup);
         }
       }
-      guestGroups.addAll(tempGroup);
+      guestGroups.addAll(tempGroup.where((element) => element.cleared != true));
     } else {
       guestGroups.clear();
     }
     return guestGroups;
+  }
+
+  @override
+  Future<void> clearGroup(GuestGroup group) async {
+    await database
+        .collection(mainListPath)
+        .doc("${group.name}_${group.id}")
+        .set(group.copyWith(cleared: true).toJson());
+    guestGroups.remove(group);
+  }
+
+  @override
+  Future<void> deleteGroup(GuestGroup group) async {
+    await database
+        .collection(mainListPath)
+        .doc("${group.name}_${group.id}")
+        .delete();
+    guestGroups.remove(group);
+  }
+
+  @override
+  Future<void> updateGroup(GuestGroup group) async {
+    await database
+        .collection(mainListPath)
+        .doc('${group.name}_${group.id}')
+        .set(group.toJson());
   }
 }

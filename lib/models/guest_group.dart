@@ -9,11 +9,14 @@ part 'guest_group.g.dart';
 @JsonSerializable()
 class GuestGroup {
   GuestGroup(
-    this.id, {
+    this.id,{
+    this.cleared = false,
     required this.name,
     this.reservedGuests = const <Guest>[],
     this.unreservedGuests = const <Guest>[],
   });
+
+  final bool cleared;
   final String id;
   final String name;
   final List<Guest> reservedGuests;
@@ -24,13 +27,16 @@ class GuestGroup {
 
   Map<String, dynamic> toJson() => _$GuestGroupToJson(this);
 
-  GuestGroup? copyWith({
+  GuestGroup copyWith({
+    bool? cleared,
     String? id,
     String? name,
     List<Guest>? reservedGuests,
     List<Guest>? unreservedGuests,
+
   }) {
     return GuestGroup(
+      cleared: cleared ?? this.cleared,
       id ?? this.id,
       name: name ?? this.name,
       reservedGuests: reservedGuests ?? this.reservedGuests,

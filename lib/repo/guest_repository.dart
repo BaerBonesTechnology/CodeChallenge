@@ -9,9 +9,14 @@ abstract class GuestRepository {
     String? name,
   });
 
-  void removeGroup(GuestGroup group);
+  Future<void> addGuestGroup(GuestGroup group);
+
+  Future<void> clearGroup(GuestGroup group);
+
+  Future<void> deleteGroup(GuestGroup group);
 
   Future<List<GuestGroup>> retrieveGroups();
 
-  Future<void> addGuestGroup(GuestGroup group);
+  Future<void> updateGroup(GuestGroup group);
+
 }
