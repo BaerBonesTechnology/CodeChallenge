@@ -6,15 +6,26 @@ class DListBackButton extends StatelessWidget {
   final Function()? onPressed;
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          onPressed != null ? onPressed!() : DoNothingAction();
-          context.pop();
-        },
-        icon: Icon(
-          Icons.chevron_left_rounded,
-          color: Colors.blue[700],
-          size: 32,
-        ));
+    return Semantics(
+      key: const Key('BackButton'),
+      label: 'Back Button',
+      hint: 'Go to previous screen',
+      button: true,
+      enabled: true,
+      onTap: () {
+        onPressed != null ? onPressed!() : DoNothingAction();
+        context.pop();
+      },
+      child: IconButton(
+          onPressed: () {
+            onPressed != null ? onPressed!() : DoNothingAction();
+            context.pop();
+          },
+          icon: Icon(
+            Icons.chevron_left_rounded,
+            color: Colors.blue[700],
+            size: 32,
+          )),
+    );
   }
 }

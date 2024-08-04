@@ -8,7 +8,9 @@ import '../../models/guest_group.dart';
 import '../guest_providers.dart';
 
 class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
-  CurrentGroupNotifier(super.state, {required this.guestRepo});
+  CurrentGroupNotifier(super.state, {required this.guestRepo}) {
+    guestRepo.retrieveGroups();
+  }
 
   final GuestRepository guestRepo;
   GuestGroup? getState() => state;void chooseGroup(GuestGroup group) {

@@ -67,9 +67,13 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                       currentGroup.clear();
                     },
                   ),
-                  title: Text(
-                    _appBarTitle,
-                    style: Theme.of(context).textTheme.displayMedium,
+                  title: Semantics(
+                    label: _appBarTitle,
+                    tooltip: 'Heading',
+                    child: Text(
+                      _appBarTitle,
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
                   ),
                   pinned: false,
                   centerTitle: !_hasScrolled.value,
@@ -92,7 +96,10 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                               currentGroup.markGuestPresent(ref, guest);
                           ref.read(guestProvider.notifier).state =
                               guest.isPresent;
-                        });
+                        },
+                      groupSize: currentGroup.getState()!.reservedGuests.length,
+                      index: ndx,
+                    );
                   },
                           childCount:
                               currentGroup.getState()?.reservedGuests.length ??
@@ -111,6 +118,8 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                       );
                     }
                     return GuestSelector(
+                      groupSize: currentGroup.getState()!.unreservedGuests.length - 1,
+                        index: ndx,
                         guest: currentGroup.getState()!.unreservedGuests[ndx],
                         onChanged: (guest) => ref
                             .read(isEnabledProvider.notifier)
@@ -172,44 +181,48 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
               currentGroup.hasConflictedCheckin() ? context.push(conflictScreenRoute):
                   currentGroup.areGuestsCheckedInReserved() ? context.push(confirmationRoute):
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Row(
-                  children: [
-                    Container(
-                      alignment: Alignment.topCenter,
-                      width: MediaQuery.of(context).size.width * .5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            reservationNeededLabel,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                          ),
-                          Text(
-                            reservationNeededText,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.white,
-                                    ),
-                          ),
-                        ],
+                content: Semantics(
+                  label: reservationNeededLabel,
+                  tooltip: 'Alert',
+                  child: Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.topCenter,
+                        width: MediaQuery.of(context).size.width * .5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              reservationNeededLabel,
+                              style:
+                                  Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                            ),
+                            Text(
+                              reservationNeededText,
+                              style:
+                                  Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: Colors.white,
+                                      ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                      },
-                      icon: const Icon(
-                        Icons.cancel_rounded,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                        },
+                        icon: const Icon(
+                          Icons.cancel_rounded,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ));
             },

@@ -1,4 +1,4 @@
-const String addNewGroupLabel = 'Add A New Group/Guest';
+const String addNewGroupLabel = 'Add A New Group';
 const String appName = 'The D List';
 const String continueLabel = "Continue";
 const String guestHasReservation = "These Guests Have Reservations";

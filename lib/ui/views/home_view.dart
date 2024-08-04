@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:the_d_list/ui/widgets/bottom_action_button.dart';
@@ -26,9 +27,20 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
     final reservationController = ref.watch(guestListProvider);
     final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
 
+    if (reservationController.isLoading) {
+      ref.read(guestListProvider.notifier).retrieveGroups();
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(appName, style: Theme.of(context).textTheme.displayMedium,),
+        title: Semantics(
+            header: true,
+            label: appName,
+            tooltip: 'Heading',
+            child: Text(
+              appName,
+              style: Theme.of(context).textTheme.displayMedium,
+            )),
         centerTitle: true,
       ),
       body: reservationController.when(
@@ -41,7 +53,8 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
                         '?',
                         style: Theme.of(context).textTheme.displayLarge,
                       ),
-                      Text('Hmm, No Guests', style: Theme.of(context).textTheme.displayLarge),
+                      Text('Hmm, No Guests',
+                          style: Theme.of(context).textTheme.displayLarge),
                     ],
                   ),
                 )
@@ -80,7 +93,8 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
                   '?',
                   style: Theme.of(context).textTheme.displayLarge,
                 ),
-                Text('Hmm, No Guests', style: Theme.of(context).textTheme.displayLarge),
+                Text('Hmm, No Guests',
+                    style: Theme.of(context).textTheme.displayLarge),
               ],
             ),
           );
@@ -94,7 +108,7 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
         },
       ),
       bottomNavigationBar: BottomActionButton(
-        enable:true,
+        enable: true,
         label: addNewGroupLabel,
         onPressed: () {
           context.push(guestCreationRoute);

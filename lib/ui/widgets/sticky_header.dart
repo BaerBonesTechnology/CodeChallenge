@@ -8,15 +8,21 @@ class StickyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return Semantics(
+        readOnly: true,
+        header: true,
+        tooltip: 'Heading',
+        label: label,
+        child:Material(
       elevation: elevation,
       child: Container(
         alignment: Alignment.centerLeft,
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: const EdgeInsets.all(16.0),
         child: Text(
-          label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            label,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
