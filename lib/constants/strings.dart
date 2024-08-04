@@ -16,4 +16,7 @@ const String confirmationScreenLabel = 'Confirmation';
 const String confirmationScreenMessage = 'Guests Have Been Checked In';
 const String conflictScreenLabel = 'Conflicting Guests';
 const String conflictScreenMessage = 'Seems you may be checking in both a Reserved and Unreserved guest together. Reserved guests must be seated first.';
+const String creationScreenString = 'Group Edit';
+const String connectionErrorLabel = 'Connection Error';
+const String connectionErrorText = "Problem retrieving guests, please try again.";
 

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:the_d_list/constants/router_endpoints.dart';
-import 'package:the_d_list/providers/guest_providers.dart';
-import 'package:the_d_list/ui/widgets/backButton.dart';
-import 'package:the_d_list/ui/widgets/bottom_action_button.dart';
-import 'package:the_d_list/ui/widgets/guest_selector.dart';
 
+import '../../constants/router_endpoints.dart';
 import '../../constants/strings.dart';
-import '../../models/guest.dart';
+import '../../providers/guest_providers.dart';
+import '../widgets/back_button.dart';
+import '../widgets/bottom_action_button.dart';
 import '../widgets/delegates/sticky_delegate_header.dart';
+import '../widgets/guest_selector.dart';
 
 class GuestSelectionView extends ConsumerStatefulWidget {
   const GuestSelectionView({super.key});
@@ -20,7 +19,6 @@ class GuestSelectionView extends ConsumerStatefulWidget {
 
 class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
   late ScrollController _scrollController;
-  final String _appBarTitle = guestSelectionTitle;
   double _headerHeight = 0;
   final _hasScrolled = ValueNotifier(false);
 
@@ -47,11 +45,10 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
 
   @override
   Widget build(BuildContext context) {
-    final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
-    final enabled = ref.watch(isEnabledProvider);
-    final guestProvider = ref.watch(guestProviders).putIfAbsent(
-        Guest(name: '', isReserved: false),
-        () => StateProvider((ref) => false));
+    final currentGroupManager =
+        ref.watch(currentGroupNotifierProvider.notifier);
+    final currentGroup = ref.watch(currentGroupNotifierProvider);
+    final enabled = currentGroup?.getFullList().any((guest) => guest.isPresent);
 
     return Scaffold(
       body: Stack(
@@ -62,17 +59,16 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
               controller: _scrollController,
               slivers: [
                 SliverAppBar(
-                  leading:  DListBackButton(
+                  leading: DListBackButton(
                     onPressed: () {
-                      currentGroup.clear();
+                      currentGroupManager.clear();
                     },
                   ),
                   title: Semantics(
-                    label: _appBarTitle,
+                    label: guestSelectionTitle,
                     tooltip: 'Heading',
-                    child: Text(
-                      _appBarTitle,
-                      style: Theme.of(context).textTheme.displayMedium,
+                    child: const Text(
+                      guestSelectionTitle,
                     ),
                   ),
                   pinned: false,
@@ -86,24 +82,41 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                   padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
                   sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, ndx) {
-                    if (currentGroup.getState() == null) {
-                      throw Exception('NULL GROUP OBJECT');
+                    if (currentGroupManager.getState() == null) {
+                      return const Center(
+                        child: Text('No Reserved Guests'),
+                      );
+                    } else if (currentGroupManager
+                        .getState()!
+                        .reservedGuests
+                        .isEmpty) {
+                      return const Center(
+                        child: Text('No Reserved Guests'),
+                      );
+                    } else if (!currentGroupManager
+                        .getState()!
+                        .reservedGuests[ndx]
+                        .isReserved) {
+                      return const SizedBox.shrink(); // Skip unreserved guests
                     }
                     return GuestSelector(
-                        guest: currentGroup.getState()!.reservedGuests[ndx],
+                        groupSize: currentGroupManager
+                                .getState()!
+                                .reservedGuests
+                                .length -
+                            1,
+                        index: ndx,
+                        guest:
+                            currentGroupManager.getState()!.reservedGuests[ndx],
                         onChanged: (guest) {
-                          ref.read(isEnabledProvider.notifier).state =
-                              currentGroup.markGuestPresent(ref, guest);
-                          ref.read(guestProvider.notifier).state =
-                              guest.isPresent;
-                        },
-                      groupSize: currentGroup.getState()!.reservedGuests.length,
-                      index: ndx,
-                    );
+                          currentGroupManager.markGuestPresent(ref, guest);
+                        });
                   },
-                          childCount:
-                              currentGroup.getState()?.reservedGuests.length ??
-                                  0)),
+                          childCount: currentGroupManager
+                                  .getState()
+                                  ?.reservedGuests
+                                  .length ??
+                              0)),
                 ),
                 SliverPersistentHeader(
                     delegate: StickyHeaderDelegate(label: unreservedLabel),
@@ -112,20 +125,33 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
                   sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, ndx) {
-                    if (currentGroup.getState() == null) {
+                    if (currentGroupManager.getState() == null) {
+                      return const Center(
+                        child: Text('No Unreserved Guests'),
+                      );
+                    } else if (currentGroupManager
+                        .getState()!
+                        .unreservedGuests
+                        .isEmpty) {
                       return const Center(
                         child: Text('No Unreserved Guests'),
                       );
                     }
                     return GuestSelector(
-                      groupSize: currentGroup.getState()!.unreservedGuests.length - 1,
+                        groupSize: currentGroupManager
+                                .getState()!
+                                .unreservedGuests
+                                .length -
+                            1,
                         index: ndx,
-                        guest: currentGroup.getState()!.unreservedGuests[ndx],
-                        onChanged: (guest) => ref
-                            .read(isEnabledProvider.notifier)
-                            .state = currentGroup.markGuestPresent(ref, guest));
+                        guest: currentGroupManager
+                            .getState()!
+                            .unreservedGuests[ndx],
+                        onChanged: (guest) {
+                          currentGroupManager.markGuestPresent(ref, guest);
+                        });
                   },
-                          childCount: currentGroup
+                          childCount: currentGroupManager
                                   .getState()
                                   ?.unreservedGuests
                                   .length ??
@@ -176,55 +202,65 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
           ),
           BottomActionButton(
             label: continueLabel,
-            enable: ref.watch(isEnabledProvider),
+            enable: enabled ?? false,
             onPressed: () {
-              currentGroup.hasConflictedCheckin() ? context.push(conflictScreenRoute):
-                  currentGroup.areGuestsCheckedInReserved() ? context.push(confirmationRoute):
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Semantics(
-                  label: reservationNeededLabel,
-                  tooltip: 'Alert',
-                  child: Row(
-                    children: [
-                      Container(
-                        alignment: Alignment.topCenter,
-                        width: MediaQuery.of(context).size.width * .5,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              reservationNeededLabel,
-                              style:
-                                  Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+              currentGroupManager.hasConflictedCheckIn()
+                  ? context.push(conflictScreenRoute)
+                  : currentGroupManager.areGuestsCheckedInReserved()
+                      ? () {
+                          context.push(confirmationRoute);
+                        }()
+                      : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Semantics(
+                            label: reservationNeededLabel,
+                            tooltip: 'Alert',
+                            child: Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.topCenter,
+                                  width: MediaQuery.of(context).size.width * .5,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        reservationNeededLabel,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
                                       ),
-                            ),
-                            Text(
-                              reservationNeededText,
-                              style:
-                                  Theme.of(context).textTheme.bodySmall?.copyWith(
-                                        color: Colors.white,
+                                      Text(
+                                        reservationNeededText,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                            ),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context)
+                                        .clearSnackBars();
+                                  },
+                                  icon: const Icon(
+                                    Icons.cancel_rounded,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                        },
-                        icon: const Icon(
-                          Icons.cancel_rounded,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ));
+                          ),
+                        ));
             },
           ),
         ],

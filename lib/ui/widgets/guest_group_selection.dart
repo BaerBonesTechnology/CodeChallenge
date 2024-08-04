@@ -7,7 +7,7 @@ class GuestGroupSelection extends StatefulWidget {
   const GuestGroupSelection(
       {super.key,
       required this.group,
-        this.hint,
+      this.hint,
       required this.onDelete,
       required this.onEditSwipe,
       required this.onSelect});
@@ -25,9 +25,11 @@ class GuestGroupSelection extends StatefulWidget {
 class _GuestGroupSelectionState extends State<GuestGroupSelection> {
   @override
   Widget build(BuildContext context) {
+    final count = widget.group.getFullList().length;
+
     return context.mounted
         ? MergeSemantics(
-          child: Semantics(
+            child: Semantics(
               button: true,
               enabled: true,
               onTap: () => widget.onSelect(widget.group),
@@ -52,9 +54,11 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                   ),
                   confirmDismiss: (direction) async {
                     if (direction == DismissDirection.startToEnd) {
-                      Future.value(true);
+                      return Future.value(true); // Return true to dismiss
                     } else {
                       widget.onEditSwipe(widget.group);
+                      return Future.value(
+                          false); // Return false to prevent dismissal
                     }
                   },
                   direction: DismissDirection.horizontal,
@@ -93,6 +97,13 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                               ),
                             ),
                           ),
+                          Text(
+                            'Guest Count: $count',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.black38),
+                          )
                         ],
                       ),
                     ),
@@ -100,7 +111,7 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                 ),
               ),
             ),
-        )
+          )
         : const CircularProgressIndicator();
   }
 }

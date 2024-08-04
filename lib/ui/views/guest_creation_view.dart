@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:the_d_list/constants/strings.dart';
-import 'package:the_d_list/ui/widgets/bottom_action_button.dart';
 
+import '../../constants/strings.dart';
 import '../../providers/creation_view_providers.dart';
 import '../../providers/guest_providers.dart';
-import '../widgets/backButton.dart';
+import '../widgets/back_button.dart';
+import '../widgets/bottom_action_button.dart';
 import '../widgets/user_creation_list_tile.dart';
 
 class GuestCreationView extends ConsumerStatefulWidget {
@@ -23,23 +23,23 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
 
   @override
   Widget build(BuildContext context) {
-    var groupList = ref.watch(tempGroupListProvider);
-    var currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
+    ref.watch(currentGroupNotifierProvider);
+    final groupList = ref.watch(tempGroupListProvider);
+    final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
     final size = MediaQuery.of(context).size;
-    bool enabled = currentGroup.getState() != null
-        ? currentGroup.getState()!.unreservedGuests.isNotEmpty ||
-            currentGroup.getState()!.reservedGuests.isNotEmpty
-        : false;
+
+    bool enabled = groupList.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Creation'),
+        title: const Text(creationScreenString),
         centerTitle: true,
         leading: DListBackButton(
-          onPressed: () {
+          onPressed: () async {
             _guestEntryNameController.clear();
             currentGroup.clear();
-            groupList.clear();
+            await ref.read(guestListProvider.notifier).retrieveGroups();
+            ref.read(tempGroupListProvider.notifier).state = [];
             context.pop();
           },
         ),
@@ -94,16 +94,12 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                       controller: listScrollController,
                       itemBuilder: (context, ndx) {
                         return GuestCreationListTile(
-                          name: ref.read(tempGroupListProvider)[ndx].name,
-                          onDelete: () {
-                            if (ndx >= 0 && ndx < groupList.length) {
-                              final guest = groupList[ndx];
-                              ref.read(tempGroupListProvider.notifier).state =
-                                  groupList.where((g) => g != guest).toList();
-                              currentGroup.removeGuest(ref, guest: guest);
-                            }
-                          },
-                        );
+                          isReserved: ref.read(tempGroupListProvider)[ndx].isReserved,
+                            name: ref.read(tempGroupListProvider)[ndx].name,
+                            onDelete: () {
+                              currentGroup.removeGuest(ref,
+                                  index: ndx);
+                            });
                       },
                       itemCount: groupList.length,
                     ),
@@ -116,21 +112,14 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
         label: saveGroupLabel,
         enable: enabled,
         onPressed: () async {
-          try {
-            if (currentGroup.getState() != null &&
-                (currentGroup.getState()!.reservedGuests.isNotEmpty ||
-                    currentGroup.getState()!.unreservedGuests.isNotEmpty)) {
-              ref
-                  .read(guestListProvider.notifier)
-                  .addGuestGroup(currentGroup.getState()!);
-              _guestEntryNameController.clear();
-              currentGroup.clear();
-              groupList.clear();
-              context.pop();
-            } else {
-              throw Exception('Add a guest or group to proceed');
-            }
-          } catch (e) {
+          if (currentGroup.getState() != null) {
+            ref.read(guestListProvider.notifier).addGuestGroup(ref);
+            _guestEntryNameController.clear();
+            ref.read(currentGroupNotifierProvider.notifier).clear();
+            ref.read(tempGroupListProvider.notifier).state = [];
+            await ref.read(guestListProvider.notifier).retrieveGroups();
+            context.pop();
+          } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Add a guest or group to proceed'),

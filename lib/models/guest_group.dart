@@ -43,6 +43,8 @@ class GuestGroup {
     );
   }
 
+  List<Guest> getFullList() => [...reservedGuests, ...unreservedGuests];
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

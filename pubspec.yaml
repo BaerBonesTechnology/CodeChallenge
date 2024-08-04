@@ -18,6 +18,7 @@ dependencies:
   cloud_firestore: ^5.2.0
   uuid: ^4.4.2
   google_fonts: ^6.2.1
+  flutter_hooks: ^0.20.5
 
 dev_dependencies:
   flutter_test:

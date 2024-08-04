@@ -2,7 +2,7 @@ import '../models/guest.dart';
 import '../models/guest_group.dart';
 
 abstract class GuestRepository {
-  final List<GuestGroup> guestGroups = <GuestGroup>[];
+  List<GuestGroup> guestGroups = <GuestGroup>[];
 
   void createGroup(
     List<Guest> guests, {
@@ -17,6 +17,8 @@ abstract class GuestRepository {
 
   Future<List<GuestGroup>> retrieveGroups();
 
-  Future<void> updateGroup(GuestGroup group);
+  void updateGroup(GuestGroup group);
+
+  bool verifyGroup(GuestGroup group);
 
 }

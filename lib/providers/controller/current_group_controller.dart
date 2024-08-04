@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import'package:the_d_list/providers/creation_view_providers.dart';
+import 'package:the_d_list/providers/creation_view_providers.dart';
 import 'package:the_d_list/repo/guest_repository.dart';
 
 import '../../models/guest.dart';
@@ -13,8 +13,13 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
   }
 
   final GuestRepository guestRepo;
-  GuestGroup? getState() => state;void chooseGroup(GuestGroup group) {
+  GuestGroup? getState() => state;
+
+  void chooseGroup(WidgetRef ref, GuestGroup group) {
+    ref.read(tempGroupListProvider.notifier).state = [];
+    clear();
     state = group;
+    setUpTempGuestList(ref, group: group);
   }
 
   void clear() {
@@ -23,46 +28,49 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
 
   Guest addGuest(WidgetRef ref,
       {required String name, required bool isReserved}) {
-    state ??= GuestGroup(
-        name: name.split(' ').last,
-      );
-    final newReservedList = List<Guest>.from(state?.reservedGuests ?? []);
-    final newUnreservedList = List<Guest>.from(state?.unreservedGuests ?? []);
+    state ??= GuestGroup(name: name.split(' ').last);
 
     final newGuest = Guest(name: name, isReserved: isReserved);
-    isReserved
-        ? newReservedList.add(newGuest)
-        : newUnreservedList.add(newGuest);
 
-    state = state?.copyWith(
-        reservedGuests: newReservedList, unreservedGuests: newUnreservedList);
-    final groupList = ref.read(tempGroupListProvider);
+    if (isReserved) {
+      state =
+          state!.copyWith(reservedGuests: [...state!.reservedGuests, newGuest]);
+    } else {
+      state = state!
+          .copyWith(unreservedGuests: [...state!.unreservedGuests, newGuest]);
+    }
 
-    final updatedList = [
-      ...groupList,
-      newGuest
-    ];
+    _updateTempGroupList(ref);
 
-    ref.read(tempGroupListProvider.notifier).state = updatedList;return newGuest;
+    return newGuest;
   }
 
-  void removeGuest(WidgetRef ref, {required Guest guest}) async {
-    state?.reservedGuests.remove(guest);
-    state?.unreservedGuests.remove(guest);
-    ref.read(guestProviders).remove(guest);
-    await guestRepo.updateGroup(state!);
+  void removeGuest(WidgetRef ref, {required index}) {
+    ref.read(tempGroupListProvider).removeAt(index);
+    ref.read(tempGroupListProvider.notifier).state =
+        ref.read(tempGroupListProvider);
+    state = state!.copyWith(
+        unreservedGuests: ref
+            .read(tempGroupListProvider)
+            .where((guest) => !guest.isReserved)
+            .toList(),
+        reservedGuests: ref
+            .read(tempGroupListProvider)
+            .where((guest) => guest.isReserved)
+            .toList());
   }
 
-  bool markGuestPresent(WidgetRef ref, Guest guest) {
+  void markGuestPresent(WidgetRef ref, Guest guest) {
     if (state != null) {
       final group = state!;
-      final guestList = guest.isReserved ? group.reservedGuests : group.unreservedGuests;
+      final guestList =
+          guest.isReserved ? group.reservedGuests : group.unreservedGuests;
       final index = guestList.indexOf(guest);
 
       if (index != -1) {
         if (!ref.read(guestProviders).containsKey(guest)) {
           ref.read(guestProviders)[guest] =
-              StateProvider((ref)=> guest.isPresent);
+              StateProvider((ref) => guest.isPresent);
         }
 
         final guestProvider = ref.read(guestProviders)[guest]!;
@@ -72,20 +80,20 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
         guestList[index] = guest.copyWith(isPresent: newIsPresent);
         state = group.copyWith(
           reservedGuests: guest.isReserved ? guestList : group.reservedGuests,
-          unreservedGuests: guest.isReserved ? group.unreservedGuests : guestList,
+          unreservedGuests:
+              !guest.isReserved ? guestList : group.unreservedGuests,
         );
 
         if (!ref.read(guestProviders).containsKey(guest)) {
-          ref.read(guestProviders)[guest] = StateProvider((ref) => guest.isPresent);
+          ref.read(guestProviders)[guest] =
+              StateProvider((ref) => guest.isPresent);
         }
-
-        if (!guest.isReserved) {
-          updateGroup();
-        }
+        updateGroup(ref);
       }
     }
-
-    return areGuestsCheckedIn();
+    ref.read(isEnabledProvider.notifier).state =
+        state!.unreservedGuests.any((element) => element.isPresent) ||
+            state!.reservedGuests.any((element) => element.isPresent);
   }
 
   bool areGuestsCheckedIn() {
@@ -94,18 +102,57 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
         state!.unreservedGuests.any((guest) => guest.isPresent);
   }
 
-  bool hasConflictedCheckin(){
-    if(state == null) return false;
+  bool hasConflictedCheckIn() {
+    if (state == null) return false;
     return state!.reservedGuests.any((guest) => guest.isPresent) &&
-    state!.unreservedGuests.any((guest) => guest.isPresent);
+        state!.unreservedGuests.any((guest) => guest.isPresent);
   }
 
-  bool areGuestsCheckedInReserved(){
-    if(state == null) return false;
-    return areGuestsCheckedIn() ? state!.reservedGuests.any((guest) => guest.isPresent)&&
-    ! state!.unreservedGuests.any((guest) => guest.isPresent) : false;
+  bool areGuestsCheckedInReserved() {
+    if (state == null) return false;
+    return areGuestsCheckedIn()
+        ? state!.reservedGuests.any((guest) => guest.isPresent) &&
+            !state!.unreservedGuests.any((guest) => guest.isPresent)
+        : false;
   }
 
-  void updateGroup() async =>
-      state != null ? guestRepo.updateGroup(state!) : DoNothingAction();
+  void setUpTempGuestList(WidgetRef ref,
+      {required GuestGroup group, bool guestsPresent = false}) {
+    if (state != null) {
+      if (state!.reservedGuests.isNotEmpty ||
+          state!.unreservedGuests.isNotEmpty) {
+        var groupList = <Guest>[];
+        if (!guestsPresent) {
+          groupList.addAll(group.reservedGuests);
+          groupList.addAll(group.unreservedGuests);
+        } else {
+          final newGroup = state;
+          group.reservedGuests
+              .where((guest) => guest.isPresent)
+              .forEach((guest) {
+            final index = newGroup!.reservedGuests.indexOf(guest);
+            newGroup.reservedGuests.removeAt(index);
+          });
+          group.unreservedGuests
+              .where((guest) => guest.isPresent)
+              .forEach((guest) {
+            final index = newGroup!.reservedGuests.indexOf(guest);
+            newGroup.reservedGuests.removeAt(index);
+          });
+          ref.read(currentGroupNotifierProvider.notifier).state = newGroup;
+          groupList = newGroup != null ? [...newGroup.reservedGuests, ...newGroup.unreservedGuests] : [];
+        }
+        ref.read(tempGroupListProvider.notifier).state = groupList;
+      }
+    }
+  }
+
+  void updateGroup(WidgetRef ref) async {
+    state != null ? guestRepo.updateGroup(state!) : DoNothingAction();
+  }
+
+  void _updateTempGroupList(WidgetRef ref, {GuestGroup? group}) {
+    ref.read(tempGroupListProvider.notifier).state =
+        group != null ? group.getFullList() : state!.getFullList();
+  }
 }

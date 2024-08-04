@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:the_d_list/providers/guest_providers.dart';
-import 'package:the_d_list/ui/widgets/backButton.dart';
 
 import '../../constants/strings.dart';
+import '../widgets/back_button.dart';
 
 class ConflictView extends ConsumerWidget {
   const ConflictView({super.key});
