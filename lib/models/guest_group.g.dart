@@ -7,7 +7,8 @@ part of 'guest_group.dart';
 // **************************************************************************
 
 GuestGroup _$GuestGroupFromJson(Map<String, dynamic> json) => GuestGroup(
-      json['id'] as String,
+      id: json['id'] as String?,
+      cleared: json['cleared'] as bool? ?? false,
       name: json['name'] as String,
       reservedGuests: (json['reservedGuests'] is List<dynamic>)
           ? (json['reservedGuests'] as List<dynamic>)
@@ -32,6 +33,7 @@ GuestGroup _$GuestGroupFromJson(Map<String, dynamic> json) => GuestGroup(
 
 Map<String, dynamic> _$GuestGroupToJson(GuestGroup instance) =>
     <String, dynamic>{
+      'cleared': instance.cleared,
       'id': instance.id,
       'name': instance.name,
       'reservedGuests':

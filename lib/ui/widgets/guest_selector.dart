@@ -5,32 +5,41 @@ import '../../models/guest.dart';
 import '../../providers/guest_providers.dart';
 
 class GuestSelector extends ConsumerWidget {
-  const GuestSelector({super.key, required this.guest, required this.onChanged});
+  const GuestSelector(
+      {super.key, required this.guest, required this.onChanged});
 
   final Guest guest;
   final Function(Guest guest) onChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final guestProvider = ref.watch(guestProviders).putIfAbsent(
-        guest, () => StateProvider((ref) => guest.isPresent));
-    final isPresent = ref.watch(guestProvider);
+    final guestProvider = ref
+        .watch(guestProviders)
+        .putIfAbsent(guest, () => StateProvider((ref) => false));
 
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Checkbox(
-          value: isPresent, // Use guest.isPresent directly
-          onChanged: (value) {
-            if (value != null) {
-              ref.read(guestProvider.notifier).state = value;
-              onChanged(guest.copyWith(isPresent: value));
-            }
-          },
+    return GestureDetector(
+      onTap: () {
+        onChanged(guest);
+      },
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.045,
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Checkbox(
+              activeColor: Colors.green,
+              value: ref.watch(guestProvider),
+              onChanged: (value) {
+                if (value != null) {
+                  onChanged(guest);
+                }
+              },
+            ),
+            Text(guest.name),
+          ],
         ),
-        Text(guest.name),
-      ],
+      ),
     );
   }
 }

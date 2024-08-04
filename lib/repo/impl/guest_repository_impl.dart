@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../constants/strings.dart';
@@ -15,7 +16,7 @@ class GuestRepositoryImpl extends GuestRepository {
   void createGroup(List<Guest> guests, {String? name}) async {
     const uuid = Uuid();
     final id = uuid.v1();
-    final group = GuestGroup(id,
+    final group = GuestGroup(
         name: name ?? guests[0].name.split(' ').last,
         reservedGuests:
             guests.where((element) => element.isReserved == true).toList(),
@@ -27,11 +28,23 @@ class GuestRepositoryImpl extends GuestRepository {
 
   @override
   Future<void> addGuestGroup(GuestGroup group) async {
+    String? altName;
+
+    await database.collection(mainListPath).where('name', isEqualTo: group.name).get().then(
+        (query){
+          if(query.docs.isNotEmpty){
+            final names = group.reservedGuests[0].name.split(' ');
+            altName = '${names.last}, ${names.first[0]}';
+            group = group.copyWith(
+              name: altName,
+            );
+          }
+        }
+    );
     await database
         .collection(mainListPath)
         .doc('${group.name}_${group.id}')
         .set(group.toJson());
-    guestGroups.add(group);
   }
 
   @override
@@ -45,7 +58,7 @@ class GuestRepositoryImpl extends GuestRepository {
       for (final doc in snapshot.docs) {
         final guestGroup = GuestGroup.fromJson(doc.data());
         final registeredGuest = guestGroups.where((element) =>
-            element.id == guestGroup.id); // Check against guestGroups
+            element.id == guestGroup.id);
         if (registeredGuest.isEmpty) {
           tempGroup.add(guestGroup);
         }

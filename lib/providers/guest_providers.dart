@@ -12,7 +12,8 @@ import 'controller/guest_list_controller.dart';
 final currentGroupNotifierProvider =
     StateNotifierProvider<CurrentGroupNotifier, GuestGroup?>((ref) =>
         CurrentGroupNotifier(null,
-            guestRepo: ref.read(guestRepositoryProvider)));
+            guestRepo: ref.read(guestRepositoryProvider)),
+    );
 
 final guestListProvider =
     StateNotifierProvider<GuestListController, AsyncValue<List<GuestGroup>>>(
@@ -23,3 +24,5 @@ final guestRepositoryProvider = Provider(
     (ref) => GuestRepositoryImpl(database: FirebaseFirestore.instance));
 
 final guestProviders = Provider((ref) => <Guest, StateProvider<bool>>{});
+
+final isEnabledProvider = StateProvider((ref) => false);

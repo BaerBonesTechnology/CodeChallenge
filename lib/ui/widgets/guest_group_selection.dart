@@ -8,10 +8,12 @@ class GuestGroupSelection extends StatefulWidget {
       {super.key,
       required this.group,
       required this.onDelete,
+      required this.onEditSwipe,
       required this.onSelect});
 
   final GuestGroup group;
   final Function(GuestGroup group) onDelete;
+  final Function(GuestGroup group) onEditSwipe;
   final Function(GuestGroup group) onSelect;
 
   @override
@@ -40,12 +42,31 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                   ],
                 ),
               ),
-              key: guestGroupItemKey(widget.group.name),
-              onDismissed: (direction) => {
+              confirmDismiss: (direction) async {
                 if (direction == DismissDirection.startToEnd) {
-                  widget.onDelete(widget.group)
+                  Future.value(true);
+                } else {
+                  widget.onEditSwipe(widget.group);
                 }
               },
+              direction: DismissDirection.horizontal,
+              secondaryBackground: Container(
+                color: Colors.blueGrey,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.chevron_right,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              key: guestGroupItemKey(widget.group.name),
+              onDismissed: (direction) => widget.onDelete(widget.group),
               child: Card(
                 elevation: 0,
                 shape: const RoundedRectangleBorder(),

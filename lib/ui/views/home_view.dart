@@ -1,31 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:the_d_list/ui/widgets/bottom_action_button.dart';
 
 import '../../constants/router_endpoints.dart';
 import '../../constants/strings.dart';
+import '../../models/guest_group.dart';
+import '../../providers/creation_view_providers.dart';
 import '../../providers/guest_providers.dart';
-import '../widgets/guest_group_Selection.dart';
+import '../widgets/guest_group_selection.dart';
 
 class HomeView extends ConsumerStatefulWidget {
-  HomeView({super.key,});
-
-  final homeAppBar = AppBar(
-    title: const Text(appName),
-    centerTitle: true,
-  );
-
-  final emptyListView = const Center(
-    child: Column(
-      children: [
-        Text(
-          '?',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
-        ),
-        Text('Hmm, No Guests'),
-      ],
-    ),
-  );
+  const HomeView({
+    super.key,
+  });
 
   @override
   ConsumerState createState() => _HomeWidgetState();
@@ -39,11 +27,24 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
     final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
 
     return Scaffold(
-      appBar: widget.homeAppBar,
+      appBar: AppBar(
+        title: Text(appName, style: Theme.of(context).textTheme.displayMedium,),
+        centerTitle: true,
+      ),
       body: reservationController.when(
         data: (guestGroups) {
           return guestGroups.isEmpty
-              ? widget.emptyListView
+              ? Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        '?',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                      Text('Hmm, No Guests', style: Theme.of(context).textTheme.displayLarge),
+                    ],
+                  ),
+                )
               : ListView.builder(
                   itemBuilder: (context, ndx) {
                     return GuestGroupSelection(
@@ -53,7 +54,18 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
                         context.push(guestSelectionRoute);
                       },
                       onDelete: (group) {
-                        reservationController.value?.remove(group);
+                        ref.read(guestListProvider.notifier).deleteGroup(group);
+                      },
+                      onEditSwipe: (GuestGroup group) {
+                        currentGroup.chooseGroup(group);
+                        final tempList = [
+                          ...currentGroup.getState()!.reservedGuests
+                        ];
+                        tempList
+                            .addAll(currentGroup.getState()!.unreservedGuests);
+                        ref.read(tempGroupListProvider.notifier).state =
+                            tempList;
+                        context.push(guestCreationRoute);
                       },
                     );
                   },
@@ -62,9 +74,16 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
         },
         error: (e, stack) {
           return Center(
-              heightFactor: size.height,
-              widthFactor: size.width,
-              child: widget.emptyListView);
+            child: Column(
+              children: [
+                Text(
+                  '?',
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+                Text('Hmm, No Guests', style: Theme.of(context).textTheme.displayLarge),
+              ],
+            ),
+          );
         },
         loading: () {
           return Center(
@@ -74,9 +93,12 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push(guestCreationRoute),
-        child: const Icon(Icons.add),
+      bottomNavigationBar: BottomActionButton(
+        enable:true,
+        label: addNewGroupLabel,
+        onPressed: () {
+          context.push(guestCreationRoute);
+        },
       ),
     );
   }

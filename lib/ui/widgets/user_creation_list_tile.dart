@@ -12,7 +12,7 @@ class GuestCreationListTile extends StatelessWidget {
       children: [
         Text(name),
         const Spacer(),
-        IconButton(onPressed: onDelete, icon: const Icon(Icons.delete_outline))
+        IconButton(onPressed: () => onDelete(), icon: const Icon(Icons.delete_outline))
       ],
     );
   }
