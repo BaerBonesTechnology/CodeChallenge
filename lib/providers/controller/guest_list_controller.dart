@@ -11,23 +11,10 @@ class GuestListController extends StateNotifier<AsyncValue<List<GuestGroup>>> {
 
   final GuestRepository guestRepo;
 
-  Future<void> _updateGroups() async {
-    state = const AsyncValue.loading();
-    try {
-      final groups = await guestRepo.retrieveGroups();
-      state = AsyncValue.data(groups);
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
-    }
-  }
-
-  Future<void> retrieveGroups() async {
-    _updateGroups();
-  }
-
   Future<void> addGuestGroup(WidgetRef ref) async {
     final tempGroupList = ref.read(tempGroupListProvider);
-    final currentGroup = ref.read(currentGroupNotifierProvider.notifier).getState();
+    final currentGroup =
+        ref.read(currentGroupNotifierProvider.notifier).getState();
 
     final group = currentGroup != null
         ? currentGroup.copyWith(
@@ -59,5 +46,19 @@ class GuestListController extends StateNotifier<AsyncValue<List<GuestGroup>>> {
       state = AsyncValue.error(e, stackTrace);
     }
     await _updateGroups();
+  }
+
+  Future<void> retrieveGroups() async {
+    _updateGroups();
+  }
+
+  Future<void> _updateGroups() async {
+    state = const AsyncValue.loading();
+    try {
+      final groups = await guestRepo.retrieveGroups();
+      state = AsyncValue.data(groups);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
   }
 }

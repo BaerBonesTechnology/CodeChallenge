@@ -4,19 +4,20 @@ import '../../constants/keys.dart';
 import '../../models/guest_group.dart';
 
 class GuestGroupSelection extends StatefulWidget {
-  const GuestGroupSelection(
-      {super.key,
-      required this.group,
-      this.hint,
-      required this.onDelete,
-      required this.onEditSwipe,
-      required this.onSelect});
+  const GuestGroupSelection({
+    super.key,
+    required this.group,
+    this.hint,
+    required this.onDelete,
+    required this.onEditSwipe,
+    required this.onSelect,
+  });
 
   final GuestGroup group;
+  final String? hint;
   final Function(GuestGroup group) onDelete;
   final Function(GuestGroup group) onEditSwipe;
   final Function(GuestGroup group) onSelect;
-  final String? hint;
 
   @override
   State<GuestGroupSelection> createState() => _GuestGroupSelectionState();
@@ -30,6 +31,7 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
     return context.mounted
         ? MergeSemantics(
             child: Semantics(
+              key: guestGroupItemKey(widget.group.name),
               button: true,
               enabled: true,
               onTap: () => widget.onSelect(widget.group),

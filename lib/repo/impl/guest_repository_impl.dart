@@ -11,24 +11,14 @@ class GuestRepositoryImpl extends GuestRepository {
   final FirebaseFirestore database;
 
   @override
-  void createGroup(List<Guest> guests, {String? name}) async {
-    final group = GuestGroup(
-        name: name ?? guests[0].name.split(' ').last,
-        reservedGuests:
-            guests.where((element) => element.isReserved == true).toList(),
-        unreservedGuests:
-            guests.where((element) => element.isReserved == false).toList());
-
-    await addGuestGroup(group);
-  }
-
-  @override
   Future<void> addGuestGroup(GuestGroup group) async {
     String? altName;
 
     await database
         .collection(mainListPath)
-        .doc('${group.name}_${group.id}').get().then((snapshot) async {
+        .doc('${group.name}_${group.id}')
+        .get()
+        .then((snapshot) async {
       if (snapshot.exists) {
         final docId = snapshot.get('id');
         if (docId == group.id) {
@@ -52,7 +42,7 @@ class GuestRepositoryImpl extends GuestRepository {
             unreservedGuests: unreservedGuests,
           );
 
-          if(verifyGroup(group)) {
+          if (verifyGroup(group)) {
             await database
                 .collection(mainListPath)
                 .doc('${group.name}_${group.id}')
@@ -67,29 +57,12 @@ class GuestRepositoryImpl extends GuestRepository {
         }
       }
     });
-
-    if(verifyGroup(group)){
+    if (verifyGroup(group)) {
       await database
           .collection(mainListPath)
           .doc('${group.name}_${group.id}')
           .set(group.toJson());
     }
-  }
-
-  @override
-  Future<List<GuestGroup>> retrieveGroups() async {
-    final snapshot = await database.collection(mainListPath)
-        .where('id', isNull: false)
-        .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      guestGroups = snapshot.docs.map((doc) => GuestGroup.fromJson(doc.data())).toList();
-      guestGroups.removeWhere((element) => element.cleared == true); // Remove cleared groups
-    } else {
-      guestGroups.clear();
-    }
-
-    return guestGroups;
   }
 
   @override
@@ -102,12 +75,43 @@ class GuestRepositoryImpl extends GuestRepository {
   }
 
   @override
+  void createGroup(List<Guest> guests, {String? name}) async {
+    final group = GuestGroup(
+        name: name ?? guests[0].name.split(' ').last,
+        reservedGuests:
+            guests.where((element) => element.isReserved == true).toList(),
+        unreservedGuests:
+            guests.where((element) => element.isReserved == false).toList());
+
+    await addGuestGroup(group);
+  }
+
+  @override
   Future<void> deleteGroup(GuestGroup group) async {
     await database
         .collection(mainListPath)
         .doc("${group.name}_${group.id}")
         .delete();
     guestGroups.remove(group);
+  }
+
+  @override
+  Future<List<GuestGroup>> retrieveGroups() async {
+    final snapshot = await database
+        .collection(mainListPath)
+        .where('id', isNull: false)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      guestGroups =
+          snapshot.docs.map((doc) => GuestGroup.fromJson(doc.data())).toList();
+      guestGroups.removeWhere(
+          (element) => element.cleared == true); // Remove cleared groups
+    } else {
+      guestGroups.clear();
+    }
+
+    return guestGroups;
   }
 
   @override
@@ -119,17 +123,19 @@ class GuestRepositoryImpl extends GuestRepository {
   }
 
   @override
-  bool verifyGroup(GuestGroup group){
-    final reservedTestGroup = group.reservedGuests.where((element) => !element.isReserved);
-    final unreservedTestGroup = group.unreservedGuests.where((element) => element.isReserved);
+  bool verifyGroup(GuestGroup group) {
+    final reservedTestGroup =
+        group.reservedGuests.where((element) => !element.isReserved);
+    final unreservedTestGroup =
+        group.unreservedGuests.where((element) => element.isReserved);
 
-    if(reservedTestGroup.isEmpty && unreservedTestGroup.isEmpty){
+    if (reservedTestGroup.isEmpty && unreservedTestGroup.isEmpty) {
       return true;
-    }else{
+    } else {
       for (var guest in reservedTestGroup) {
         group.reservedGuests.remove(guest);
       }
-      for(var guest in unreservedTestGroup){
+      for (var guest in unreservedTestGroup) {
         group.reservedGuests.remove(guest);
       }
       verifyGroup(group);

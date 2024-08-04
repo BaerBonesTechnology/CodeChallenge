@@ -19,29 +19,9 @@ class GuestSelectionView extends ConsumerStatefulWidget {
 
 class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
   late ScrollController _scrollController;
-  double _headerHeight = 0;
+
   final _hasScrolled = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_headerHeight == 0) {
-      _headerHeight = context.findRenderObject()?.semanticBounds.height ?? 0;
-    } else {
-      _hasScrolled.value = true;
-    }
-  }
+  double _headerHeight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -266,5 +246,26 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_headerHeight == 0) {
+      _headerHeight = context.findRenderObject()?.semanticBounds.height ?? 0;
+    } else {
+      _hasScrolled.value = true;
+    }
   }
 }

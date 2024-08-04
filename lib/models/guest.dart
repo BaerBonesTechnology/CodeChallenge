@@ -7,25 +7,26 @@ part 'guest.g.dart';
 @JsonSerializable()
 class Guest {
   Guest({
-    required this.name,
-    required this.isReserved,
-    this.isPresent = false,
     String? id,
+    this.isPresent = false,
+    required this.isReserved,
+    required this.name,
   }) : id = id ?? const Uuid().v4();
 
-  final String name;
-  final bool isReserved;
-  final bool isPresent;
   final String id;
+  final bool isPresent;
+  final bool isReserved;
+  final String name;
+
 
   factory Guest.fromJson(Map<String, dynamic> json) => _$GuestFromJson(json);
 
   Map<String, dynamic> toJson() => _$GuestToJson(this);
 
   Guest copyWith({
-    String? name,
-    bool? isReserved,
     bool? isPresent,
+    bool? isReserved,
+    String? name,
   }) {
     return Guest(
         id: id,

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:the_d_list/constants/keys.dart';
 
 class GuestCreationListTile extends StatelessWidget {
   const GuestCreationListTile({super.key, required this.name, required this.onDelete, required this.isReserved});
 
+  final bool isReserved;
   final String name;
   final Function() onDelete;
-  final bool isReserved;
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      key: temporaryGuestItemKey(name),
       children: [
         Text(name),
         Visibility(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:the_d_list/constants/keys.dart';
 
 import '../../constants/strings.dart';
 import '../../providers/creation_view_providers.dart';
@@ -62,15 +63,18 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Checkbox(
-                        activeColor: Colors.green,
-                        value: ref.watch(tempReservedProvider),
-                        onChanged: (value) {
-                          ref.read(tempReservedProvider.notifier).state =
-                              value!;
-                        }),
+                      activeColor: Colors.green,
+                      key: reserveGuestCheckboxKey,
+                      onChanged: (value) {
+                        ref.read(tempReservedProvider.notifier).state = value!;
+                      },
+                      value: ref.watch(tempReservedProvider),
+                    ),
                     const Text('Reserve'),
                     const Spacer(),
                     IconButton.filledTonal(
+                      icon: const Icon(Icons.add),
+                      key: createGuestButtonKey,
                       onPressed: () async {
                         currentGroup.addGuest(
                           ref,
@@ -80,7 +84,6 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                         );
                         _guestEntryNameController.clear();
                       },
-                      icon: const Icon(Icons.add),
                     )
                   ],
                 ),
@@ -94,11 +97,11 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                       controller: listScrollController,
                       itemBuilder: (context, ndx) {
                         return GuestCreationListTile(
-                          isReserved: ref.read(tempGroupListProvider)[ndx].isReserved,
+                            isReserved:
+                                ref.read(tempGroupListProvider)[ndx].isReserved,
                             name: ref.read(tempGroupListProvider)[ndx].name,
                             onDelete: () {
-                              currentGroup.removeGuest(ref,
-                                  index: ndx);
+                              currentGroup.removeGuest(ref, index: ndx);
                             });
                       },
                       itemCount: groupList.length,
@@ -109,8 +112,8 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
         ),
       ]),
       bottomNavigationBar: BottomActionButton(
-        label: saveGroupLabel,
         enable: enabled,
+        label: saveGroupLabel,
         onPressed: () async {
           if (currentGroup.getState() != null) {
             ref.read(guestListProvider.notifier).addGuestGroup(ref);

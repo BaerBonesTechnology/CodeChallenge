@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../constants/keys.dart';
+
 class DListBackButton extends StatelessWidget {
   const DListBackButton({super.key, this.onPressed});
+
   final Function()? onPressed;
+
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      key: const Key('BackButton'),
+      key: backButtonKey,
       label: 'Back Button',
       hint: 'Go to previous screen',
       button: true,

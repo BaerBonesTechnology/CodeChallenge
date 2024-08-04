@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:the_d_list/constants/keys.dart';
 
 import '../../models/guest.dart';
 import '../../providers/guest_providers.dart';
@@ -8,15 +9,15 @@ class GuestSelector extends ConsumerWidget {
   const GuestSelector({
     super.key,
     required this.groupSize,
-    required this.index,
     required this.guest,
+    required this.index,
     required this.onChanged,
   });
 
-  final Guest guest;
-  final Function(Guest guest) onChanged;
   final int groupSize;
+  final Guest guest;
   final int index;
+  final Function(Guest guest) onChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,6 +27,7 @@ class GuestSelector extends ConsumerWidget {
     final checked = ref.watch(guestProvider);
 
     return Semantics(
+      key: guestItemKey(guest.name),
       label: guest.name,
       tooltip: 'checkbox',
       checked: checked,

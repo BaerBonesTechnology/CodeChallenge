@@ -9,21 +9,16 @@ class ConflictView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //To be used for confirmation screen
-    // final currentGroup = ref.read(currentGroupNotifierProvider);
-    //
-    // currentGroup?.reservedGuests.where((guest) => guest.isPresent).forEach(
-    //     (guest){
-    //       ref.read(currentGroupNotifierProvider.notifier).removeGuest(ref, guest: guest);
-    //     }
-    // );
     return Scaffold(
       appBar: AppBar(
-        title: const Text(conflictScreenLabel),
         leading: const DListBackButton(),
+        title: const Text(conflictScreenLabel),
       ),
       body: Center(
-        child: Text(conflictScreenMessage, style: Theme.of(context).textTheme.displayMedium,),
+        child: Text(
+          conflictScreenMessage,
+          style: Theme.of(context).textTheme.displayMedium,
+        ),
       ),
     );
   }

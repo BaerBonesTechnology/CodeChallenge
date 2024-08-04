@@ -10,8 +10,8 @@ part 'guest_group.g.dart';
 @JsonSerializable()
 class GuestGroup {
   GuestGroup({
-    String? id,
     this.cleared = false,
+    String? id,
     required this.name,
     this.reservedGuests = const <Guest>[],
     this.unreservedGuests = const <Guest>[],

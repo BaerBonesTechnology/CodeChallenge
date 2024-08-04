@@ -12,19 +12,8 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
     guestRepo.retrieveGroups();
   }
 
-  final GuestRepository guestRepo;
   GuestGroup? getState() => state;
-
-  void chooseGroup(WidgetRef ref, GuestGroup group) {
-    ref.read(tempGroupListProvider.notifier).state = [];
-    clear();
-    state = group;
-    setUpTempGuestList(ref, group: group);
-  }
-
-  void clear() {
-    state = null;
-  }
+  final GuestRepository guestRepo;
 
   Guest addGuest(WidgetRef ref,
       {required String name, required bool isReserved}) {
@@ -45,19 +34,35 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
     return newGuest;
   }
 
-  void removeGuest(WidgetRef ref, {required index}) {
-     ref.read(tempGroupListProvider).removeAt(index);
-    ref.read(tempGroupListProvider.notifier).state =
-        ref.read(tempGroupListProvider);
-    state = state!.copyWith(
-        unreservedGuests: ref
-            .read(tempGroupListProvider)
-            .where((guest) => !guest.isReserved)
-            .toList(),
-        reservedGuests: ref
-            .read(tempGroupListProvider)
-            .where((guest) => guest.isReserved)
-            .toList());
+  bool areGuestsCheckedIn() {
+    if (state == null) return false;
+    return state!.reservedGuests.any((guest) => guest.isPresent) ||
+        state!.unreservedGuests.any((guest) => guest.isPresent);
+  }
+
+  bool areGuestsCheckedInReserved() {
+    if (state == null) return false;
+    return areGuestsCheckedIn()
+        ? state!.reservedGuests.any((guest) => guest.isPresent) &&
+            !state!.unreservedGuests.any((guest) => guest.isPresent)
+        : false;
+  }
+
+  void chooseGroup(WidgetRef ref, GuestGroup group) {
+    ref.read(tempGroupListProvider.notifier).state = [];
+    clear();
+    state = group;
+    setUpTempGuestList(ref, group: group);
+  }
+
+  void clear() {
+    state = null;
+  }
+
+  bool hasConflictedCheckIn() {
+    if (state == null) return false;
+    return state!.reservedGuests.any((guest) => guest.isPresent) &&
+        state!.unreservedGuests.any((guest) => guest.isPresent);
   }
 
   void markGuestPresent(WidgetRef ref, Guest guest) {
@@ -96,24 +101,19 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
             state!.reservedGuests.any((element) => element.isPresent);
   }
 
-  bool areGuestsCheckedIn() {
-    if (state == null) return false;
-    return state!.reservedGuests.any((guest) => guest.isPresent) ||
-        state!.unreservedGuests.any((guest) => guest.isPresent);
-  }
-
-  bool hasConflictedCheckIn() {
-    if (state == null) return false;
-    return state!.reservedGuests.any((guest) => guest.isPresent) &&
-        state!.unreservedGuests.any((guest) => guest.isPresent);
-  }
-
-  bool areGuestsCheckedInReserved() {
-    if (state == null) return false;
-    return areGuestsCheckedIn()
-        ? state!.reservedGuests.any((guest) => guest.isPresent) &&
-            !state!.unreservedGuests.any((guest) => guest.isPresent)
-        : false;
+  void removeGuest(WidgetRef ref, {required index}) {
+    ref.read(tempGroupListProvider).removeAt(index);
+    ref.read(tempGroupListProvider.notifier).state =
+        ref.read(tempGroupListProvider);
+    state = state!.copyWith(
+        unreservedGuests: ref
+            .read(tempGroupListProvider)
+            .where((guest) => !guest.isReserved)
+            .toList(),
+        reservedGuests: ref
+            .read(tempGroupListProvider)
+            .where((guest) => guest.isReserved)
+            .toList());
   }
 
   void setUpTempGuestList(WidgetRef ref,
@@ -140,7 +140,9 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
             newGroup.reservedGuests.removeAt(index);
           });
           ref.read(currentGroupNotifierProvider.notifier).state = newGroup;
-          groupList = newGroup != null ? [...newGroup.reservedGuests, ...newGroup.unreservedGuests] : [];
+          groupList = newGroup != null
+              ? [...newGroup.reservedGuests, ...newGroup.unreservedGuests]
+              : [];
           updateGroup(ref);
         }
         ref.read(tempGroupListProvider.notifier).state = groupList;

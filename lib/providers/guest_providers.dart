@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:the_d_list/repo/guest_repository.dart';
 
 import '../models/guest.dart';
 import '../models/guest_group.dart';
@@ -20,7 +21,7 @@ final guestListProvider =
         (ref) =>
             GuestListController(guestRepo: ref.read(guestRepositoryProvider)));
 
-final guestRepositoryProvider = Provider(
+final Provider<GuestRepository> guestRepositoryProvider = Provider(
     (ref) => GuestRepositoryImpl(database: FirebaseFirestore.instance));
 
 final guestProviders = Provider((ref) => <Guest, StateProvider<bool>>{});

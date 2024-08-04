@@ -8,14 +8,15 @@ class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.label,
   });
 
-  final String label;
   final double elevation;
+  final String label;
 
-  @override
-  double get minExtent => 50;
 
   @override
   double get maxExtent => 50;
+
+  @override
+  double get minExtent => 50;
 
   @override
   Widget build(

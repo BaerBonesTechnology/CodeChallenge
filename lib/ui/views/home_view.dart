@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:the_d_list/constants/keys.dart';
 
 import '../../constants/router_endpoints.dart';
 import '../../constants/strings.dart';
@@ -21,8 +22,8 @@ class HomeView extends ConsumerStatefulWidget {
 class _HomeWidgetState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
+    final size = MediaQuery.of(context).size;
 
     return Consumer(// Wrap with Consumer
         builder: (context, ref, child) {
@@ -31,6 +32,7 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
 
       return Scaffold(
         appBar: AppBar(
+          key: homeHeadingKey,
           title: Semantics(
               header: true,
               label: appName,
@@ -153,6 +155,7 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
             ),
         ),
         bottomNavigationBar: BottomActionButton(
+          key: addGuestButtonKey,
           enable: true,
           label: addNewGroupLabel,
           onPressed: () {
