@@ -46,7 +46,7 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
   }
 
   void removeGuest(WidgetRef ref, {required index}) {
-    ref.read(tempGroupListProvider).removeAt(index);
+     ref.read(tempGroupListProvider).removeAt(index);
     ref.read(tempGroupListProvider.notifier).state =
         ref.read(tempGroupListProvider);
     state = state!.copyWith(
@@ -141,6 +141,7 @@ class CurrentGroupNotifier extends StateNotifier<GuestGroup?> {
           });
           ref.read(currentGroupNotifierProvider.notifier).state = newGroup;
           groupList = newGroup != null ? [...newGroup.reservedGuests, ...newGroup.unreservedGuests] : [];
+          updateGroup(ref);
         }
         ref.read(tempGroupListProvider.notifier).state = groupList;
       }

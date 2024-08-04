@@ -23,7 +23,7 @@ class ConflictView extends ConsumerWidget {
         leading: const DListBackButton(),
       ),
       body: Center(
-        child: Text(conflictScreenMessage, style: Theme.of(context).textTheme.displayLarge,),
+        child: Text(conflictScreenMessage, style: Theme.of(context).textTheme.displayMedium,),
       ),
     );
   }
