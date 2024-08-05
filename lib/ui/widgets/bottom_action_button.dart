@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:the_d_list/constants/colors.dart';
+import 'package:the_d_list/constants/padding_value.dart';
 
 class BottomActionButton extends StatelessWidget {
   BottomActionButton({
@@ -25,14 +27,13 @@ class BottomActionButton extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.09,
       width: MediaQuery.of(context).size.width,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: PaddingValue.bottomLargePadding,
         child: Semantics(
           button: true,
           container: true,
           enabled: enable,
           hint: hint,
           label: label,
-          key: Key('${key.toString()} Action Button'),
           onTap: () => onPressed(),
           child: ElevatedButton(
             onPressed: enable ? onPressed : null,
@@ -41,9 +42,9 @@ class BottomActionButton extends StatelessWidget {
               backgroundColor: WidgetStateProperty.resolveWith<Color>(
                 (Set<WidgetState> states) {
                   if (states.contains(WidgetState.disabled)) {
-                    return Colors.blueGrey.shade300; // Disabled color
+                    return inactiveBlue;
                   }
-                  return Color(Colors.blue[800]?.value ?? 0xFF1565C0);
+                  return primaryBlue;
                 },
               ),
             ),

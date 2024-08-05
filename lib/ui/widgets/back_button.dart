@@ -11,11 +11,11 @@ class DListBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      key: backButtonKey,
-      label: 'Back Button',
-      hint: 'Go to previous screen',
       button: true,
       enabled: true,
+      hint: 'Go to previous screen',
+      key: backButtonKey,
+      label: 'Back Button',
       onTap: () {
         onPressed != null ? onPressed!() : DoNothingAction();
         context.pop();

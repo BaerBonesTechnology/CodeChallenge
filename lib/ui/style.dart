@@ -1,67 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../constants/colors.dart';
+import '../constants/padding_value.dart';
+import '../constants/sizes.dart';
+
 ThemeData dListThemeData = ThemeData(
   appBarTheme: AppBarTheme(
     shape: Border.fromBorderSide(BorderSide(
-      color: Color(Colors.grey[300]?.value ?? 0xFFE0E0E0),
+      color: primaryWhite,
       width: 1,
       strokeAlign: BorderSide.strokeAlignOutside,
       style: BorderStyle.solid,
     )),
     iconTheme: IconThemeData(
-      color: Colors.blue[700],
+      color: primaryBlue,
     ),
     titleTextStyle: const TextStyle(
-        fontSize: 16, fontWeight: FontWeight.w800, color: Colors.black),
+        fontSize: FontSize.medium, fontWeight: FontWeight.w800, color: black),
   ),
   checkboxTheme: const CheckboxThemeData(
-    side: BorderSide(width: 0, strokeAlign: BorderSide.strokeAlignOutside),
+    side: BorderSide(width: 0.0, strokeAlign: BorderSide.strokeAlignOutside),
   ),
-  colorSchemeSeed: Colors.blue[700],
+  colorSchemeSeed: primaryBlue,
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: WidgetStatePropertyAll(Colors.blue[800]),
-      padding:
-          const WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 2.0)),
-      foregroundColor: const WidgetStatePropertyAll(Colors.white),
+      backgroundColor: WidgetStatePropertyAll(primaryBlue),
+      padding: const WidgetStatePropertyAll(
+        EdgeInsets.symmetric(vertical: PaddingValue.small),
+      ),
+      foregroundColor: WidgetStatePropertyAll(primaryWhite),
       minimumSize: const WidgetStatePropertyAll(Size(200, 60)),
       textStyle: const WidgetStatePropertyAll(TextStyle(
-        fontSize: 13,
+        fontSize: FontSize.small,
         fontWeight: FontWeight.w800,
       )),
     ),
   ),
   iconTheme: IconThemeData(
-    color: Colors.blue[700],
+    color: primaryBlue,
   ),
-  snackBarTheme: const SnackBarThemeData(
-      backgroundColor: Color(0xFF070f1c),
-      closeIconColor: Colors.white,
+  snackBarTheme: SnackBarThemeData(
+      backgroundColor: secondaryBlue,
+      closeIconColor: primaryWhite,
       showCloseIcon: false,
-      actionTextColor: Colors.white,
+      actionTextColor: primaryWhite,
       contentTextStyle: TextStyle(
-        fontSize: 12,
+        fontSize: FontSize.xsmall,
+        color: primaryWhite,
       ),
-      insetPadding: EdgeInsets.all(5.0)),
-  textTheme: GoogleFonts.nunitoSansTextTheme(const TextTheme(
+      insetPadding: const EdgeInsets.all(PaddingValue.snackBarDefault)),
+  textTheme: GoogleFonts.nunitoSansTextTheme(
+    const TextTheme(
       displayLarge: TextStyle(
-        fontSize: 18,
+        fontSize: FontSize.large,
         fontWeight: FontWeight.w600,
       ),
       displayMedium: TextStyle(
-        fontSize: 16,
+        fontSize: FontSize.medium,
         fontWeight: FontWeight.w800,
       ),
       displaySmall: TextStyle(
-        fontSize: 13,
-        color: Color(0xFF070f1c),
+        fontSize: FontSize.small,
+        color: secondaryBlue,
       ),
-      bodyLarge: TextStyle(fontSize: 16),
+      bodyLarge: TextStyle(fontSize: FontSize.medium),
       bodyMedium: TextStyle(
-        fontSize: 14,
+        fontSize: FontSize.displayMedium,
       ),
       bodySmall: TextStyle(
-        fontSize: 12,
-      ))),
+        fontSize: FontSize.xsmall,
+      ),
+    ),
+  ),
 );

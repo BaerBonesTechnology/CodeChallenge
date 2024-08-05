@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:the_d_list/constants/padding_value.dart';
+
+import '../../constants/strings.dart';
 
 class StickyHeader extends StatelessWidget {
   const StickyHeader({super.key, required this.label, required this.elevation});
@@ -11,14 +14,14 @@ class StickyHeader extends StatelessWidget {
     return Semantics(
         readOnly: true,
         header: true,
-        tooltip: 'Heading',
+        tooltip: headingToolTip,
         label: label,
         child:Material(
       elevation: elevation,
       child: Container(
         alignment: Alignment.centerLeft,
         color: Theme.of(context).scaffoldBackgroundColor,
-        padding: const EdgeInsets.all(16.0),
+        padding: PaddingValue.defaultPaddingHorizontal,
         child: Text(
             label,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

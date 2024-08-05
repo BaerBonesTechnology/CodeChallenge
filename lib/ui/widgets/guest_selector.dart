@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:the_d_list/constants/keys.dart';
+import 'package:the_d_list/constants/strings.dart';
 
 import '../../models/guest.dart';
 import '../../providers/guest_providers.dart';
@@ -29,7 +30,7 @@ class GuestSelector extends ConsumerWidget {
     return Semantics(
       key: guestItemKey(guest.name),
       label: guest.name,
-      tooltip: 'checkbox',
+      tooltip: checkBoxToolTip,
       checked: checked,
       maxValueLength: groupSize,
       currentValueLength: index,

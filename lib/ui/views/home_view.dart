@@ -22,8 +22,8 @@ class HomeView extends ConsumerStatefulWidget {
 class _HomeWidgetState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
-    final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
     final size = MediaQuery.of(context).size;
+    final currentGroup = ref.watch(currentGroupNotifierProvider.notifier);
 
     return Consumer(// Wrap with Consumer
         builder: (context, ref, child) {
