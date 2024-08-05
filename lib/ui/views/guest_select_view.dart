@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../constants/icon_size.dart';
 import '../../constants/padding_value.dart';
 import '../../constants/router_endpoints.dart';
 import '../../constants/strings.dart';
@@ -57,7 +58,7 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                 ),
                 SliverPersistentHeader(
                   delegate: StickyHeaderDelegate(label: reservedLabel),
-                  pinned: true, // Keep the header visible even when scrolled
+                  pinned: true,
                 ),
                 SliverPadding(
                   padding: PaddingValue.bottomDefaultPadding,
@@ -97,7 +98,7 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                                   .getState()
                                   ?.reservedGuests
                                   .length ??
-                              0)),
+                              0),),
                 ),
                 SliverPersistentHeader(
                     delegate: StickyHeaderDelegate(label: unreservedLabel),
@@ -136,7 +137,7 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                                   .getState()
                                   ?.unreservedGuests
                                   .length ??
-                              0)),
+                              0),),
                 ),
                 SliverToBoxAdapter(
                   child: Container(
@@ -155,7 +156,7 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                             Icons.info,
                             color:
                                 Theme.of(context).textTheme.displaySmall?.color,
-                            size: 13,
+                            size: IconSize.defaultSize,
                           ),
                         ),
                         Container(

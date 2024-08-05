@@ -20,10 +20,11 @@ class GuestCreationListTile extends StatelessWidget {
       children: [
         Text(name),
         Visibility(
-            visible: isReserved,
-            child: const Icon(
-              Icons.check,
-            )),
+          visible: isReserved,
+          child: const Icon(
+            Icons.check,
+          ),
+        ),
         const Spacer(),
         IconButton(
           onPressed: () {

@@ -38,7 +38,7 @@ class _HomeWidgetState extends ConsumerState<HomeView> {
               tooltip: headingToolTip,
               child: const Text(
                 appName,
-              )),
+              ),),
         ),
         body: RefreshIndicator(
           onRefresh: () async {

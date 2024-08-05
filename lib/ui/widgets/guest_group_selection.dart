@@ -61,8 +61,7 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                       return Future.value(true); // Return true to dismiss
                     } else {
                       widget.onEditSwipe(widget.group);
-                      return Future.value(
-                          false); // Return false to prevent dismissal
+                      return Future.value(false);
                     }
                   },
                   direction: DismissDirection.horizontal,

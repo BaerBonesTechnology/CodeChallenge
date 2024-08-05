@@ -8,17 +8,22 @@ import '../constants/font_size.dart';
 ThemeData dListThemeData = ThemeData(
   appBarTheme: AppBarTheme(
     centerTitle: true,
-    shape: Border.fromBorderSide(BorderSide(
-      color: primaryWhite,
-      width: 1,
-      strokeAlign: BorderSide.strokeAlignOutside,
-      style: BorderStyle.solid,
-    )),
+    shape: Border.fromBorderSide(
+      BorderSide(
+        color: primaryWhite,
+        width: 1,
+        strokeAlign: BorderSide.strokeAlignOutside,
+        style: BorderStyle.solid,
+      ),
+    ),
     iconTheme: IconThemeData(
       color: primaryBlue,
     ),
     titleTextStyle: const TextStyle(
-        fontSize: FontSize.medium, fontWeight: FontWeight.w800, color: black,),
+      fontSize: FontSize.medium,
+      fontWeight: FontWeight.w800,
+      color: black,
+    ),
   ),
   checkboxTheme: const CheckboxThemeData(
     side: BorderSide(width: 0.0, strokeAlign: BorderSide.strokeAlignOutside),
@@ -42,15 +47,15 @@ ThemeData dListThemeData = ThemeData(
     color: primaryBlue,
   ),
   snackBarTheme: SnackBarThemeData(
-      backgroundColor: secondaryBlue,
-      closeIconColor: primaryWhite,
-      showCloseIcon: false,
-      actionTextColor: primaryWhite,
-      contentTextStyle: TextStyle(
-        fontSize: FontSize.xsmall,
-        color: primaryWhite,
-      ),
-      insetPadding: PaddingValue.snackBarDefault,
+    backgroundColor: secondaryBlue,
+    closeIconColor: primaryWhite,
+    showCloseIcon: false,
+    actionTextColor: primaryWhite,
+    contentTextStyle: TextStyle(
+      fontSize: FontSize.xsmall,
+      color: primaryWhite,
+    ),
+    insetPadding: PaddingValue.snackBarDefault,
   ),
   textTheme: GoogleFonts.nunitoSansTextTheme(
     const TextTheme(

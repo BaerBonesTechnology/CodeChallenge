@@ -11,7 +11,6 @@ class ConfirmationView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Scaffold(
       appBar: AppBar(
         leading: DListBackButton(
@@ -20,7 +19,6 @@ class ConfirmationView extends ConsumerWidget {
           },
         ),
         title: const Text(confirmationScreenLabel),
-
       ),
       body: Center(
         child: Text(

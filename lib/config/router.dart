@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 
 import '../constants/router_endpoints.dart';
+import '../ui/views/confirmation_view.dart';
+import '../ui/views/conflict_view.dart';
 import '../ui/views/guest_creation_view.dart';
 import '../ui/views/guest_select_view.dart';
 import '../ui/views/home_view.dart';

@@ -87,24 +87,25 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                 ),
               ),
               SizedBox(
-                  height: size.height * .7,
-                  width: size.width,
-                  child: Padding(
-                    padding: PaddingValue.small,
-                    child: ListView.builder(
-                      controller: listScrollController,
-                      itemBuilder: (context, ndx) {
-                        return GuestCreationListTile(
-                            isReserved:
-                                ref.read(tempGroupListProvider)[ndx].isReserved,
-                            name: ref.read(tempGroupListProvider)[ndx].name,
-                            onDelete: () {
-                              currentGroup.removeGuest(ref, index: ndx);
-                            });
-                      },
-                      itemCount: groupList.length,
-                    ),
-                  )),
+                height: size.height * .7,
+                width: size.width,
+                child: Padding(
+                  padding: PaddingValue.small,
+                  child: ListView.builder(
+                    controller: listScrollController,
+                    itemBuilder: (context, ndx) {
+                      return GuestCreationListTile(
+                          isReserved:
+                              ref.read(tempGroupListProvider)[ndx].isReserved,
+                          name: ref.read(tempGroupListProvider)[ndx].name,
+                          onDelete: () {
+                            currentGroup.removeGuest(ref, index: ndx);
+                          });
+                    },
+                    itemCount: groupList.length,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

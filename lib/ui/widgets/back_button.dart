@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../constants/colors.dart';
+import '../../constants/icon_size.dart';
 import '../../constants/keys.dart';
 import '../../constants/strings.dart';
 
@@ -23,15 +24,16 @@ class DListBackButton extends StatelessWidget {
         context.pop();
       },
       child: IconButton(
-          onPressed: () {
-            onPressed != null ? onPressed!() : DoNothingAction();
-            context.pop();
-          },
-          icon: Icon(
-            Icons.chevron_left_rounded,
-            color: primaryBlue,
-            size: 32,
-          )),
+        onPressed: () {
+          onPressed != null ? onPressed!() : DoNothingAction();
+          context.pop();
+        },
+        icon: Icon(
+          Icons.chevron_left_rounded,
+          color: primaryBlue,
+          size: IconSize.large,
+        ),
+      ),
     );
   }
 }
