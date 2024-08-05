@@ -11,7 +11,6 @@ class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double elevation;
   final String label;
 
-
   @override
   double get maxExtent => 50;
 

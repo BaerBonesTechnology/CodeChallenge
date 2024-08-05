@@ -6,6 +6,7 @@ Key confirmGuestButton = const Key('Confirm Guest Reservation');
 Key createGroupButtonKey = const Key('Create Group Button');
 Key createGroupRouteButtonKey = const Key('Create Group Screen Button');
 Key createGuestButtonKey = const Key('Create a guest');
+Key emptyScreenLabelKey = const Key('Empty Screen View');
 Key guestGroupItemKey(String groupName) => Key('Guest Group: $groupName');
 Key guestItemKey(String groupName) => Key('Guest Group: $groupName');
 Key homeHeadingKey = const Key('Home Header');

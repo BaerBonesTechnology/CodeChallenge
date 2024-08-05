@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../constants/colors.dart';
 import '../../constants/keys.dart';
+import '../../constants/strings.dart';
 
 class DListBackButton extends StatelessWidget {
   const DListBackButton({super.key, this.onPressed});
@@ -15,7 +17,7 @@ class DListBackButton extends StatelessWidget {
       enabled: true,
       hint: 'Go to previous screen',
       key: backButtonKey,
-      label: 'Back Button',
+      label: backButtonName,
       onTap: () {
         onPressed != null ? onPressed!() : DoNothingAction();
         context.pop();
@@ -27,7 +29,7 @@ class DListBackButton extends StatelessWidget {
           },
           icon: Icon(
             Icons.chevron_left_rounded,
-            color: Colors.blue[700],
+            color: primaryBlue,
             size: 32,
           )),
     );

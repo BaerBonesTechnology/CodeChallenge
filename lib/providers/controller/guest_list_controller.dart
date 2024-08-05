@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:the_d_list/providers/creation_view_providers.dart';
-import 'package:the_d_list/providers/guest_providers.dart';
 
 import '../../models/guest_group.dart';
 import '../../repo/guest_repository.dart';
+import '../creation_view_providers.dart';
+import '../guest_providers.dart';
 
 class GuestListController extends StateNotifier<AsyncValue<List<GuestGroup>>> {
   GuestListController({required this.guestRepo})

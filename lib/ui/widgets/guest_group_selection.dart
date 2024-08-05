@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../constants/font_size.dart';
 import '../../constants/keys.dart';
+import '../../constants/padding_value.dart';
 import '../../models/guest_group.dart';
 
 class GuestGroupSelection extends StatefulWidget {
@@ -45,7 +47,7 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: PaddingValue.small,
                           child: Icon(
                             Icons.delete,
                             color: Colors.white,
@@ -70,7 +72,7 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: PaddingValue.small,
                           child: Icon(
                             Icons.chevron_right,
                             color: Colors.white,
@@ -90,12 +92,12 @@ class _GuestGroupSelectionState extends State<GuestGroupSelection> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: PaddingValue.small,
                             child: Text(
                               widget.group.name,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: FontSize.medium,
                               ),
                             ),
                           ),

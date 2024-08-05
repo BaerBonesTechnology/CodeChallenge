@@ -1,7 +1,7 @@
 const regularBorderWidth = 1;
 const fontSizeLarge = 16;
 
-class FontSize{
+class FontSize {
   static const large = 18.0;
   static const medium = 16.0;
   static const displayMedium = 14.0;

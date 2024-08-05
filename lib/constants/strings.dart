@@ -1,5 +1,7 @@
 const String addNewGroupLabel = 'Add A New Group';
+const String alertToolTip = 'Alert';
 const String appName = 'The D List';
+const String backButtonName = 'Back Button';
 const String checkBoxToolTip = 'checkbox';
 const String confirmationScreenLabel = 'Confirmation';
 const String confirmationScreenMessage = 'Guests Have Been Checked In';
@@ -16,6 +18,9 @@ const String guestReservationWarning =
 const String guestSelectionTitle = "Select Guests";
 const String headingToolTip = 'Heading';
 const String mainListPath = "Lists";
+const String noGuestText = 'Hmm, No Guests';
+const String noReservedGuestsWarning = 'No Reserved Guests';
+const String noUnreservedGuestsWarning = 'No Unreserved Guests';
 const String reservationNeededLabel = 'Reservation Needed';
 const String reservationNeededText = 'Select at least one Guest that has a reservation to continue';
 const String reservedLabel = "These Guests Have Reservations";

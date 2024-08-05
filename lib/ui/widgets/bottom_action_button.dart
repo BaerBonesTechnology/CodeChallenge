@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:the_d_list/constants/colors.dart';
-import 'package:the_d_list/constants/padding_value.dart';
+
+import '../../constants/colors.dart';
+import '../../constants/padding_value.dart';
 
 class BottomActionButton extends StatelessWidget {
   BottomActionButton({

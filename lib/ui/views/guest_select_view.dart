@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../constants/padding_value.dart';
 import '../../constants/router_endpoints.dart';
 import '../../constants/strings.dart';
 import '../../providers/guest_providers.dart';
@@ -46,7 +47,7 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                   ),
                   title: Semantics(
                     label: guestSelectionTitle,
-                    tooltip: 'Heading',
+                    tooltip: headingToolTip,
                     child: const Text(
                       guestSelectionTitle,
                     ),
@@ -59,19 +60,19 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                   pinned: true, // Keep the header visible even when scrolled
                 ),
                 SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+                  padding: PaddingValue.bottomDefaultPadding,
                   sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, ndx) {
                     if (currentGroupManager.getState() == null) {
                       return const Center(
-                        child: Text('No Reserved Guests'),
+                        child: Text(noReservedGuestsWarning),
                       );
                     } else if (currentGroupManager
                         .getState()!
                         .reservedGuests
                         .isEmpty) {
                       return const Center(
-                        child: Text('No Reserved Guests'),
+                        child: Text(noReservedGuestsWarning),
                       );
                     } else if (!currentGroupManager
                         .getState()!
@@ -102,19 +103,19 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                     delegate: StickyHeaderDelegate(label: unreservedLabel),
                     pinned: true),
                 SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+                  padding: PaddingValue.bottomDefaultPadding,
                   sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, ndx) {
                     if (currentGroupManager.getState() == null) {
                       return const Center(
-                        child: Text('No Unreserved Guests'),
+                        child: Text(noUnreservedGuestsWarning),
                       );
                     } else if (currentGroupManager
                         .getState()!
                         .unreservedGuests
                         .isEmpty) {
                       return const Center(
-                        child: Text('No Unreserved Guests'),
+                        child: Text(noUnreservedGuestsWarning),
                       );
                     }
                     return GuestSelector(
@@ -140,16 +141,14 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                 SliverToBoxAdapter(
                   child: Container(
                     height: MediaQuery.of(context).size.height / 2,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                    ),
+                    padding: PaddingValue.defaultPaddingHorizontal,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width * .05,
-                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          padding: PaddingValue.xSmallVertical,
                           height: 75,
                           alignment: Alignment.topCenter,
                           child: Icon(
@@ -160,12 +159,7 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.fromLTRB(
-                            8.0,
-                            0,
-                            8.0,
-                            16,
-                          ),
+                          padding: PaddingValue.bottomDefaultPadding,
                           width: MediaQuery.of(context).size.width * 0.8,
                           child: Text(
                             guestReservationWarning,
@@ -193,7 +187,7 @@ class _GuessSelectionViewState extends ConsumerState<GuestSelectionView> {
                       : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Semantics(
                             label: reservationNeededLabel,
-                            tooltip: 'Alert',
+                            tooltip: alertToolTip,
                             child: Row(
                               children: [
                                 Container(

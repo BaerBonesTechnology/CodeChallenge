@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:the_d_list/constants/padding_value.dart';
 
+import '../../constants/padding_value.dart';
 import '../../constants/strings.dart';
 
 class StickyHeader extends StatelessWidget {
@@ -12,17 +12,17 @@ class StickyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-        readOnly: true,
-        header: true,
-        tooltip: headingToolTip,
-        label: label,
-        child:Material(
-      elevation: elevation,
-      child: Container(
-        alignment: Alignment.centerLeft,
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: PaddingValue.defaultPaddingHorizontal,
-        child: Text(
+      readOnly: true,
+      header: true,
+      tooltip: headingToolTip,
+      label: label,
+      child: Material(
+        elevation: elevation,
+        child: Container(
+          alignment: Alignment.centerLeft,
+          color: Theme.of(context).scaffoldBackgroundColor,
+          padding: PaddingValue.defaultPaddingHorizontal,
+          child: Text(
             label,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
@@ -30,5 +30,4 @@ class StickyHeader extends StatelessWidget {
       ),
     );
   }
-
 }

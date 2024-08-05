@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:the_d_list/constants/router_endpoints.dart';
 
+import '../../constants/router_endpoints.dart';
 import '../../constants/strings.dart';
 import '../widgets/back_button.dart';
 

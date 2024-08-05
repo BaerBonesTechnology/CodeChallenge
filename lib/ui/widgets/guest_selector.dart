@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:the_d_list/constants/keys.dart';
-import 'package:the_d_list/constants/strings.dart';
 
+import '../../constants/keys.dart';
+import '../../constants/strings.dart';
 import '../../models/guest.dart';
 import '../../providers/guest_providers.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:the_d_list/constants/keys.dart';
 
+import '../../constants/keys.dart';
+import '../../constants/padding_value.dart';
 import '../../constants/strings.dart';
 import '../../providers/creation_view_providers.dart';
 import '../../providers/guest_providers.dart';
@@ -34,14 +34,12 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(creationScreenString),
-        centerTitle: true,
         leading: DListBackButton(
           onPressed: () async {
             _guestEntryNameController.clear();
             currentGroup.clear();
             await ref.read(guestListProvider.notifier).retrieveGroups();
             ref.read(tempGroupListProvider.notifier).state = [];
-            context.pop();
           },
         ),
       ),
@@ -58,7 +56,7 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: PaddingValue.small,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -92,7 +90,7 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
                   height: size.height * .7,
                   width: size.width,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: PaddingValue.small,
                     child: ListView.builder(
                       controller: listScrollController,
                       itemBuilder: (context, ndx) {
@@ -121,7 +119,6 @@ class _GuestCreationScreenState extends ConsumerState<GuestCreationView> {
             ref.read(currentGroupNotifierProvider.notifier).clear();
             ref.read(tempGroupListProvider.notifier).state = [];
             await ref.read(guestListProvider.notifier).retrieveGroups();
-            context.pop();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
